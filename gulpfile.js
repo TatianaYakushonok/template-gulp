@@ -41,7 +41,7 @@ let dev = false;
 const path = {
   dist: {
     base: 'dist/',
-    html: 'dist/',
+    html: 'dist/*.html',
     js: 'dist/js/',
     css: 'dist/css/',
     cssIndex: 'dist/css/index.min.css',
@@ -59,9 +59,9 @@ const path = {
     imgF: 'src/img/**/*.{jpg,jpeg,png}',
     assets: [
       'src/fonts/**/*.*',
-      'src/icons/**/*.*',
-      'src/video/**/*.*',
-      'src/public/**/*.*',
+      //'src/icons/**/*.*',
+      //'src/video/**/*.*',
+      //'src/public/**/*.*',
     ],
   },
   watch: {
@@ -89,7 +89,7 @@ export const html = () =>
         }),
       ),
     )
-    .pipe(gulp.dest(path.dist.html))
+    .pipe(gulp.dest(path.dist.base))
     .pipe(browserSync.stream());
 
 //pug
@@ -104,7 +104,7 @@ export const pug = () =>
         this.emit('end');
       }),
     )
-    .pipe(gulpif(!dev, gulp.dest(path.dist.html)))
+    .pipe(gulpif(!dev, gulp.dest(path.dist.base)))
     .pipe(
       gulpif(
         dev,
@@ -115,7 +115,7 @@ export const pug = () =>
         }),
       ),
     )
-    .pipe(gulp.dest(path.dist.html))
+    .pipe(gulp.dest(path.dist.base))
     .pipe(browserSync.stream());
 
 // css
@@ -135,7 +135,7 @@ export const scss = () =>
       ),
     )
     .pipe(gulpif(!dev, gcmq()))
-    .pipe(gulpif(!dev, gulp.dest(path.dist.css)))
+    //.pipe(gulpif(!dev, gulp.dest(path.dist.css)))
     .pipe(
       gulpif(
         !dev,
@@ -196,7 +196,9 @@ export const js = () =>
 
 export const img = () =>
   gulp
-    .src(path.src.img)
+    .src(path.src.img, {
+      encoding: false,
+    })
     // .pipe(gulpif(!dev, tinypng({
     // 	key: 'API_KEY',
     // 	summarize: true,
@@ -233,7 +235,9 @@ export const img = () =>
 
 export const svg = () =>
   gulp
-    .src(path.src.svg)
+    .src(path.src.svg, {
+      encoding: false,
+    })
     .pipe(
       svgSprite({
         mode: {
@@ -252,7 +256,9 @@ export const svg = () =>
 
 export const webp = () =>
   gulp
-    .src(path.src.imgF)
+    .src(path.src.imgF, {
+      encoding: false,
+    })
     .pipe(
       gulpWebp({
         quality: dev ? 100 : 60,
@@ -267,7 +273,9 @@ export const webp = () =>
 
 export const avif = () =>
   gulp
-    .src(path.src.imgF)
+    .src(path.src.imgF, {
+      encoding: false,
+    })
     .pipe(
       gulpAvif({
         quality: dev ? 100 : 50,
@@ -282,7 +290,7 @@ export const avif = () =>
 
 export const critCSS = () =>
   gulp
-    .src(path.src.html)
+    .src(path.dist.html)
     .pipe(
       critical({
         base: path.dist.base,
